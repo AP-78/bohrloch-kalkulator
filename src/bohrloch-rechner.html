@@ -293,7 +293,7 @@ footer { margin-top:2rem;font-size:11px;color:var(--text3);font-family:'DM Mono'
 
 <header>
   <h1>Bohrloch-Abstandsrechner</h1>
-  <span class="version">v2.1 · dark · FIXED</span>
+  <span class="version">v2.2 · dark</span>
 </header>
 
 <div class="title-card">
@@ -395,7 +395,7 @@ footer { margin-top:2rem;font-size:11px;color:var(--text3);font-family:'DM Mono'
   <svg id="diagram" viewBox="0 0 540 230" xmlns="http://www.w3.org/2000/svg"></svg>
 </div>
 
-<footer>bohrloch-rechner.html · läuft vollständig offline · Daten werden lokal im Browser gespeichert · v2.1 DARK · 4-Loch-Grafik ✓</footer>
+<footer>bohrloch-rechner.html · läuft vollständig offline · Daten werden lokal im Browser gespeichert · v2.2 DARK · 4-Loch-Grafik ✓</footer>
 
 <div class="panel-toggles">
   <button class="panel-toggle" id="tog_archiv" onclick="openPanel('archiv')">
@@ -477,7 +477,7 @@ footer { margin-top:2rem;font-size:11px;color:var(--text3);font-family:'DM Mono'
       </div>
       <div class="panel-section">
         <h3>Version</h3>
-        <p class="panel-p" style="font-family:'DM Mono',monospace;font-size:12px;">v2.1 · dark · 2025 · 4-Loch-Grafik</p>
+        <p class="panel-p" style="font-family:'DM Mono',monospace;font-size:12px;">v2.2 · dark · 01.10.2026 · 4-Loch-Grafik</p>
       </div>
     </div>
   </div>
@@ -490,7 +490,7 @@ let lastMb = null, lastMh = null, lastD = null, activeId = null;
 
 /* ── Auto-Focus via Enter/Tab ── */
 function handleKey(e, id) {
-  if (e.key === 'Enter' || e.key === 'Tab') {
+  if (e.key === 'Enter' || (e.key === 'Tab' && !e.shiftKey)) {
     e.preventDefault();
     const idx = FIELD_ORDER.indexOf(id);
     const next = FIELD_ORDER[idx + 1];
@@ -498,6 +498,11 @@ function handleKey(e, id) {
     else document.getElementById('mess_title').focus();
   }
 }
+
+/* ── Wert beim Fokus markieren (auch bei programmatischem focus()) ── */
+document.addEventListener('focusin', e => {
+  if (e.target.matches('.title-card input, .input-wrap input')) e.target.select();
+});
 
 /* ── ±0.1 buttons ── */
 function step(id, delta) {
