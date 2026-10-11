@@ -1,12 +1,14 @@
 <!DOCTYPE html>
+<!--
+  bohrloch-kalkulator — SPDX-License-Identifier: GPL-3.0-or-later
+  Copyright (C) 2026 AP-78 <kontakt@ap78.de>
+-->
 <html lang="de">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Bohrloch-Abstandsrechner</title>
+<title>Bohrloch-Kalkulator</title>
 <style>
-@import url('https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=DM+Sans:wght@300;400;500&display=swap');
-
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
 
 :root {
@@ -25,10 +27,12 @@
   --radius:6px;
   --radius-lg:10px;
   --sidebar:300px;
+  --font:system-ui,-apple-system,'Segoe UI',Roboto,'Helvetica Neue',Arial,sans-serif;
+  --mono:ui-monospace,'Cascadia Mono','SF Mono',Consolas,'Liberation Mono',monospace;
 }
 
 body {
-  font-family:'DM Sans',sans-serif;
+  font-family:var(--font);
   background:var(--bg);
   color:var(--text);
   min-height:100vh;
@@ -45,7 +49,29 @@ header {
   display:flex;align-items:center;justify-content:space-between;
 }
 header h1 { font-size:20px;font-weight:500;letter-spacing:-0.02em; }
-header .version { font-size:12px;color:var(--text3);font-family:'DM Mono',monospace; }
+header .header-right { display:flex;align-items:center;gap:12px; }
+header .version { font-size:12px;color:var(--text3);font-family:var(--mono); }
+
+/* LANGUAGE SWITCH */
+.lang-wrap { position:relative; }
+.lang-btn {
+  width:34px;height:30px;display:flex;align-items:center;justify-content:center;
+  background:transparent;color:var(--text2);border:1px solid var(--border);
+  border-radius:var(--radius);cursor:pointer;transition:background 0.12s,color 0.12s;
+}
+.lang-btn:hover,.lang-btn[aria-expanded="true"] { background:var(--surface2);color:var(--text); }
+.lang-menu {
+  position:absolute;right:0;top:36px;z-index:120;list-style:none;min-width:130px;
+  background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);
+  padding:4px;box-shadow:0 6px 20px rgba(0,0,0,0.5);
+}
+.lang-menu[hidden] { display:none; }
+.lang-item {
+  width:100%;text-align:left;padding:7px 10px;background:transparent;border:none;
+  border-radius:4px;color:var(--text2);font-size:13px;font-family:var(--font);cursor:pointer;
+}
+.lang-item:hover { background:var(--surface2);color:var(--text); }
+.lang-item.active { color:var(--blue); }
 
 /* TITLE */
 .title-card {
@@ -57,7 +83,7 @@ header .version { font-size:12px;color:var(--text3);font-family:'DM Mono',monosp
 .title-card label { font-size:12px;color:var(--text2);white-space:nowrap; }
 .title-card input {
   flex:1;height:36px;padding:0 12px;font-size:14px;
-  font-family:'DM Sans',sans-serif;color:var(--text);
+  font-family:var(--font);color:var(--text);
   background:var(--surface2);border:1px solid var(--border);
   border-radius:var(--radius);outline:none;
   transition:border-color 0.15s,background 0.15s;
@@ -85,7 +111,7 @@ header .version { font-size:12px;color:var(--text3);font-family:'DM Mono',monosp
 .input-wrap { display:flex;align-items:center;gap:8px; }
 .input-wrap input {
   flex:1;min-width:0;height:40px;padding:0 8px;
-  font-size:15px;font-family:'DM Mono',monospace;
+  font-size:15px;font-family:var(--mono);
   color:var(--text);background:var(--surface2);
   border:1px solid var(--border);border-radius:var(--radius);
   outline:none;text-align:right;
@@ -107,19 +133,19 @@ header .version { font-size:12px;color:var(--text3);font-family:'DM Mono',monosp
   font-size:18px;cursor:pointer;
   display:flex;align-items:center;justify-content:center;
   user-select:none;transition:background 0.12s,color 0.12s;
-  flex-shrink:0;line-height:1;font-family:'DM Mono',monospace;
+  flex-shrink:0;line-height:1;font-family:var(--mono);
 }
 .step-btn:first-child { border-right:1px solid var(--border); }
 .step-btn:hover { background:var(--border);color:var(--text); }
 .step-btn:active { transform:scale(0.94); }
 
 .unit-label {
-  font-size:11px;color:var(--text3);font-family:'DM Mono',monospace;
+  font-size:11px;color:var(--text3);font-family:var(--mono);
   width:20px;text-align:left;flex-shrink:0;
 }
 
 .formula {
-  font-family:'DM Mono',monospace;font-size:11px;color:var(--text3);
+  font-family:var(--mono);font-size:11px;color:var(--text3);
   margin-top:6px;padding:6px 10px;background:var(--surface2);border-radius:var(--radius);
 }
 .warn { font-size:12px;color:var(--red);margin-top:6px;min-height:18px; }
@@ -141,13 +167,13 @@ header .version { font-size:12px;color:var(--text3);font-family:'DM Mono',monosp
 .result-cell:last-child { border-right:none; }
 .result-cell .lbl { font-size:11px;color:var(--text3);margin-bottom:6px; }
 .result-cell .val {
-  font-family:'DM Mono',monospace;font-size:21px;font-weight:500;
+  font-family:var(--mono);font-size:21px;font-weight:500;
   color:var(--text);letter-spacing:-0.02em;line-height:1;
 }
 .result-cell .val.blue { color:var(--blue); }
 .result-cell .val.accent { color:var(--accent); }
 .result-cell .val.muted { color:var(--text3);font-size:17px; }
-.result-cell .sub { font-size:11px;color:var(--text3);margin-top:4px;font-family:'DM Mono',monospace; }
+.result-cell .sub { font-size:11px;color:var(--text3);margin-top:4px;font-family:var(--mono); }
 
 /* SAVE ROW */
 .save-row {
@@ -157,7 +183,7 @@ header .version { font-size:12px;color:var(--text3);font-family:'DM Mono',monosp
 .save-btn {
   height:38px;padding:0 20px;background:var(--text);color:var(--bg);
   border:none;border-radius:var(--radius);font-size:13px;
-  font-family:'DM Sans',sans-serif;font-weight:500;cursor:pointer;
+  font-family:var(--font);font-weight:500;cursor:pointer;
   transition:opacity 0.15s,transform 0.1s;
 }
 .save-btn:hover { opacity:0.82; }
@@ -167,7 +193,7 @@ header .version { font-size:12px;color:var(--text3);font-family:'DM Mono',monosp
 .clear-btn {
   height:38px;padding:0 16px;background:transparent;color:var(--text2);
   border:1px solid var(--border);border-radius:var(--radius);font-size:13px;
-  font-family:'DM Sans',sans-serif;cursor:pointer;
+  font-family:var(--font);cursor:pointer;
   transition:background 0.12s,color 0.12s;
 }
 .clear-btn:hover { background:var(--surface2);color:var(--text); }
@@ -194,7 +220,7 @@ body.sidebar-open .panel-toggles { right:var(--sidebar); }
 .panel-toggle {
   writing-mode:vertical-rl;text-orientation:mixed;
   background:var(--text);color:var(--bg);border:none;
-  padding:14px 9px;font-size:12px;font-family:'DM Sans',sans-serif;
+  padding:14px 9px;font-size:12px;font-family:var(--font);
   font-weight:500;cursor:pointer;letter-spacing:0.05em;
   border-radius:var(--radius) 0 0 var(--radius);
   display:flex;align-items:center;gap:8px;
@@ -258,9 +284,10 @@ body.sidebar-open .sidebar { right:0; }
 .panel-p {
   font-size:13px;color:var(--text2);line-height:1.6;margin-bottom:0.75rem;
 }
+.panel-p a { color:var(--blue); }
 .panel-chip {
   display:inline-block;background:var(--surface2);border:1px solid var(--border);
-  border-radius:4px;padding:2px 7px;font-size:11px;font-family:'DM Mono',monospace;
+  border-radius:4px;padding:2px 7px;font-size:11px;font-family:var(--mono);
   color:var(--text2);margin:2px 2px 2px 0;
 }
 
@@ -276,9 +303,9 @@ body.sidebar-open .sidebar { right:0; }
   padding-right:26px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
 }
 .archive-item .a-vals {
-  font-family:'DM Mono',monospace;font-size:11px;color:var(--text2);line-height:1.7;
+  font-family:var(--mono);font-size:11px;color:var(--text2);line-height:1.7;
 }
-.archive-item .a-date { font-size:10px;color:var(--text3);margin-top:4px;font-family:'DM Mono',monospace; }
+.archive-item .a-date { font-size:10px;color:var(--text3);margin-top:4px;font-family:var(--mono); }
 .del-btn {
   position:absolute;top:8px;right:8px;width:20px;height:20px;
   border:none;background:transparent;color:var(--text3);font-size:13px;
@@ -287,28 +314,37 @@ body.sidebar-open .sidebar { right:0; }
 }
 .del-btn:hover { background:rgba(255,107,107,0.15);color:var(--red); }
 
-footer { margin-top:2rem;font-size:11px;color:var(--text3);font-family:'DM Mono',monospace; }
+footer { margin-top:2rem;font-size:11px;color:var(--text3);font-family:var(--mono); }
 </style>
 </head>
 <body>
 
 <header>
-  <h1>Bohrloch-Abstandsrechner</h1>
-  <span class="version">v2.3 · dark</span>
+  <h1 data-i18n="app.title"></h1>
+  <div class="header-right">
+    <span class="version">v3.0 · dark</span>
+    <div class="lang-wrap">
+      <button class="lang-btn" id="lang_btn" onclick="toggleLangMenu(event)" aria-haspopup="true" aria-expanded="false" data-i18n-title="lang.label" data-i18n-aria="lang.label">
+        <!-- Font Awesome Free 6.7.2 "language" (solid) by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2024 Fonticons, Inc. -->
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 512" width="20" height="16" fill="currentColor" aria-hidden="true"><path d="M0 128C0 92.7 28.7 64 64 64l192 0 48 0 16 0 256 0c35.3 0 64 28.7 64 64l0 256c0 35.3-28.7 64-64 64l-256 0-16 0-48 0L64 448c-35.3 0-64-28.7-64-64L0 128zm320 0l0 256 256 0 0-256-256 0zM178.3 175.9c-3.2-7.2-10.4-11.9-18.3-11.9s-15.1 4.7-18.3 11.9l-64 144c-4.5 10.1 .1 21.9 10.2 26.4s21.9-.1 26.4-10.2l8.9-20.1 73.6 0 8.9 20.1c4.5 10.1 16.3 14.6 26.4 10.2s14.6-16.3 10.2-26.4l-64-144zM160 233.2L179 276l-38 0 19-42.8zM448 164c11 0 20 9 20 20l0 4 44 0 16 0c11 0 20 9 20 20s-9 20-20 20l-2 0-1.6 4.5c-8.9 24.4-22.4 46.6-39.6 65.4c.9 .6 1.8 1.1 2.7 1.6l18.9 11.3c9.5 5.7 12.5 18 6.9 27.4s-18 12.5-27.4 6.9l-18.9-11.3c-4.5-2.7-8.8-5.5-13.1-8.5c-10.6 7.5-21.9 14-34 19.4l-3.6 1.6c-10.1 4.5-21.9-.1-26.4-10.2s.1-21.9 10.2-26.4l3.6-1.6c6.4-2.9 12.6-6.1 18.5-9.8l-12.2-12.2c-7.8-7.8-7.8-20.5 0-28.3s20.5-7.8 28.3 0l14.6 14.6 .5 .5c12.4-13.1 22.5-28.3 29.8-45L448 228l-72 0c-11 0-20-9-20-20s9-20 20-20l52 0 0-4c0-11 9-20 20-20z"/></svg>
+      </button>
+      <ul class="lang-menu" id="lang_menu" hidden></ul>
+    </div>
+  </div>
 </header>
 
 <div class="title-card">
-  <label for="mess_title">Projektname:</label>
-  <input type="text" id="mess_title" placeholder="Projektname eingeben (z. B. Frontplatte oben)" maxlength="60">
+  <label for="mess_title" data-i18n="title.label"></label>
+  <input type="text" id="mess_title" data-i18n-placeholder="title.placeholder" maxlength="60">
 </div>
 
 <div class="card">
-  <div class="card-title">Breite (horizontal)</div>
+  <div class="card-title" data-i18n="card.width"></div>
   <div class="input-grid">
     <div class="field">
-      <label>Außenkante → Außenkante</label>
+      <label data-i18n="field.outer"></label>
       <div class="input-wrap">
-        <input type="number" id="b_aussen" placeholder="Maß eingeben" min="0" step="0.1"
+        <input type="number" id="b_aussen" data-i18n-placeholder="field.placeholder" min="0" step="0.1"
                oninput="calc()" onkeydown="handleKey(event,'b_aussen')">
         <div class="btn-group">
           <button class="step-btn" onclick="step('b_aussen',-0.1)" tabindex="-1">−</button>
@@ -318,9 +354,9 @@ footer { margin-top:2rem;font-size:11px;color:var(--text3);font-family:'DM Mono'
       </div>
     </div>
     <div class="field">
-      <label>Innenkante → Innenkante</label>
+      <label data-i18n="field.inner"></label>
       <div class="input-wrap">
-        <input type="number" id="b_innen" placeholder="Maß eingeben" min="0" step="0.1"
+        <input type="number" id="b_innen" data-i18n-placeholder="field.placeholder" min="0" step="0.1"
                oninput="calc()" onkeydown="handleKey(event,'b_innen')">
         <div class="btn-group">
           <button class="step-btn" onclick="step('b_innen',-0.1)" tabindex="-1">−</button>
@@ -330,17 +366,17 @@ footer { margin-top:2rem;font-size:11px;color:var(--text3);font-family:'DM Mono'
       </div>
     </div>
   </div>
-  <div class="formula">Mittenabstand = (Außen + Innen) / 2 &nbsp;·&nbsp; Ø = (Außen − Innen) / 2</div>
+  <div class="formula" data-i18n="formula.text"></div>
   <div class="warn" id="warn_b"></div>
 </div>
 
 <div class="card">
-  <div class="card-title">Höhe (vertikal)</div>
+  <div class="card-title" data-i18n="card.height"></div>
   <div class="input-grid">
     <div class="field">
-      <label>Außenkante → Außenkante</label>
+      <label data-i18n="field.outer"></label>
       <div class="input-wrap">
-        <input type="number" id="h_aussen" placeholder="Maß eingeben" min="0" step="0.1"
+        <input type="number" id="h_aussen" data-i18n-placeholder="field.placeholder" min="0" step="0.1"
                oninput="calc()" onkeydown="handleKey(event,'h_aussen')">
         <div class="btn-group">
           <button class="step-btn" onclick="step('h_aussen',-0.1)" tabindex="-1">−</button>
@@ -350,9 +386,9 @@ footer { margin-top:2rem;font-size:11px;color:var(--text3);font-family:'DM Mono'
       </div>
     </div>
     <div class="field">
-      <label>Innenkante → Innenkante</label>
+      <label data-i18n="field.inner"></label>
       <div class="input-wrap">
-        <input type="number" id="h_innen" placeholder="Maß eingeben" min="0" step="0.1"
+        <input type="number" id="h_innen" data-i18n-placeholder="field.placeholder" min="0" step="0.1"
                oninput="calc()" onkeydown="handleKey(event,'h_innen')">
         <div class="btn-group">
           <button class="step-btn" onclick="step('h_innen',-0.1)" tabindex="-1">−</button>
@@ -362,25 +398,25 @@ footer { margin-top:2rem;font-size:11px;color:var(--text3);font-family:'DM Mono'
       </div>
     </div>
   </div>
-  <div class="formula">Mittenabstand = (Außen + Innen) / 2 &nbsp;·&nbsp; Ø = (Außen − Innen) / 2</div>
+  <div class="formula" data-i18n="formula.text"></div>
   <div class="warn" id="warn_h"></div>
 </div>
 
 <div class="results-card">
-  <div class="results-header">Ergebnisse</div>
+  <div class="results-header" data-i18n="results.header"></div>
   <div class="results-grid">
     <div class="result-cell">
-      <div class="lbl">Mittenabstand Breite</div>
+      <div class="lbl" data-i18n="results.centerWidth"></div>
       <div class="val blue" id="res_b">—</div>
       <div class="sub" id="sub_b"></div>
     </div>
     <div class="result-cell">
-      <div class="lbl">Mittenabstand Höhe</div>
+      <div class="lbl" data-i18n="results.centerHeight"></div>
       <div class="val blue" id="res_h">—</div>
       <div class="sub" id="sub_h"></div>
     </div>
     <div class="result-cell">
-      <div class="lbl">Lochdurchmesser Ø</div>
+      <div class="lbl" data-i18n="results.diameter"></div>
       <div class="val accent" id="res_d">—</div>
       <div class="sub" id="sub_d"></div>
     </div>
@@ -388,67 +424,63 @@ footer { margin-top:2rem;font-size:11px;color:var(--text3);font-family:'DM Mono'
 </div>
 
 <div class="save-row">
-  <button class="clear-btn" onclick="clearForm()">Felder leeren</button>
-  <button class="save-btn" id="csv_btn" onclick="exportFusionCsv()" disabled>Fusion-CSV</button>
-  <button class="save-btn" id="save_btn" onclick="saveMeasurement()">Messung speichern</button>
+  <button class="clear-btn" onclick="clearForm()" data-i18n="btn.clear"></button>
+  <button class="save-btn" id="csv_btn" onclick="exportFusionCsv()" disabled data-i18n="btn.csv"></button>
+  <button class="save-btn" id="save_btn" onclick="saveMeasurement()" data-i18n="btn.save"></button>
 </div>
 
 <div class="diagram-card">
   <svg id="diagram" viewBox="0 0 540 230" xmlns="http://www.w3.org/2000/svg"></svg>
 </div>
 
-<footer>bohrloch-rechner.html · läuft vollständig offline · Daten werden lokal im Browser gespeichert · v2.3 DARK · 4-Loch-Grafik ✓</footer>
+<footer data-i18n="footer.text"></footer>
 
 <div class="panel-toggles">
   <button class="panel-toggle" id="tog_archiv" onclick="openPanel('archiv')">
-    Archiv
+    <span data-i18n="tab.archive"></span>
     <span class="arch-badge" id="arch_count">0</span>
   </button>
-  <button class="panel-toggle" id="tog_anleitung" onclick="openPanel('anleitung')">
-    Anleitung
-  </button>
-  <button class="panel-toggle" id="tog_info" onclick="openPanel('info')">
-    Info
-  </button>
+  <button class="panel-toggle" id="tog_anleitung" onclick="openPanel('anleitung')" data-i18n="tab.guide"></button>
+  <button class="panel-toggle" id="tog_info" onclick="openPanel('info')" data-i18n="tab.info"></button>
 </div>
 
 <!-- SIDEBAR -->
 <div class="sidebar" id="sidebar">
 
-  <!-- Archiv -->
+  <!-- Archive -->
   <div id="panel_archiv" class="panel-content">
     <div class="sidebar-head">
-      <h2>Gespeicherte Messungen</h2>
-      <button class="close-btn" onclick="closePanel()">✕</button>
+      <h2 data-i18n="archive.title"></h2>
+      <button class="close-btn" onclick="closePanel()" data-i18n-aria="btn.close" data-i18n-title="btn.close">✕</button>
     </div>
     <div class="panel-body" id="archive_list"></div>
   </div>
 
-  <!-- Anleitung -->
+  <!-- Guide -->
   <div id="panel_anleitung" class="panel-content" style="display:none">
     <div class="sidebar-head">
-      <h2>Kurzanleitung</h2>
-      <button class="close-btn" onclick="closePanel()">✕</button>
+      <h2 data-i18n="guide.title"></h2>
+      <button class="close-btn" onclick="closePanel()" data-i18n-aria="btn.close" data-i18n-title="btn.close">✕</button>
     </div>
     <div class="panel-body">
       <div class="panel-section">
         <ul class="panel-ul">
-          <li>Projektnamen eingeben, z. B. <strong>„Frontplatte links"</strong></li>
-          <li>Außen- und Innenkante in mm eingeben — jeweils für <strong>Breite</strong> und <strong>Höhe</strong></li>
-          <li>Werte mit den <strong>−/+</strong> Buttons feinjustieren (je 0,1 mm) oder direkt tippen</li>
-          <li>Mit <strong>Enter</strong> oder <strong>Tab</strong> springt der Cursor automatisch zum nächsten Feld</li>
-          <li>Ergebnisse (Mittenabstand Breite, Höhe und Lochdurchmesser) erscheinen sofort</li>
-          <li>Messung über <strong>„Messung speichern"</strong> ins Archiv übernehmen</li>
-          <li>Archiv über den <strong>Archiv</strong>-Tab aufklappen — gespeicherte Messungen anklicken zum Wiederladen</li>
-          <li><strong>„Fusion-CSV"</strong> exportiert Mittenabstände und Ø als Fusion-360-Parameter (<span class="panel-chip">&lt;Projektname&gt;_bl_h</span> <span class="panel-chip">_bl_v</span> <span class="panel-chip">_bl_dia</span>) — in Fusion über Parameter ändern → Import. Nur aktiv, wenn Breite und Höhe gültig sind; Ø = Mittelwert aus Breite und Höhe</li>
-          <li>Mit <strong>„Felder leeren"</strong> alle Eingaben zurücksetzen für eine neue Messung</li>
+          <li data-i18n-html="guide.i1"></li>
+          <li data-i18n-html="guide.i2"></li>
+          <li data-i18n-html="guide.i3"></li>
+          <li data-i18n-html="guide.i4"></li>
+          <li data-i18n-html="guide.i5"></li>
+          <li data-i18n-html="guide.i6"></li>
+          <li data-i18n-html="guide.i7"></li>
+          <li data-i18n-html="guide.i8"></li>
+          <li data-i18n-html="guide.i9"></li>
         </ul>
       </div>
       <div class="panel-section">
-        <h3>Tastaturkürzel</h3>
+        <h3 data-i18n="guide.keys"></h3>
         <ul class="panel-ul">
-          <li><span class="panel-chip">Enter</span> oder <span class="panel-chip">Tab</span> — nächstes Feld</li>
-          <li><span class="panel-chip">↑</span> <span class="panel-chip">↓</span> — Wert um 0,1 mm ändern</li>
+          <li data-i18n-html="guide.k1"></li>
+          <li data-i18n-html="guide.k2"></li>
         </ul>
       </div>
     </div>
@@ -457,39 +489,103 @@ footer { margin-top:2rem;font-size:11px;color:var(--text3);font-family:'DM Mono'
   <!-- Info -->
   <div id="panel_info" class="panel-content" style="display:none">
     <div class="sidebar-head">
-      <h2>Info</h2>
-      <button class="close-btn" onclick="closePanel()">✕</button>
+      <h2 data-i18n="info.title"></h2>
+      <button class="close-btn" onclick="closePanel()" data-i18n-aria="btn.close" data-i18n-title="btn.close">✕</button>
     </div>
     <div class="panel-body">
       <div class="panel-section">
-        <h3>Zweck</h3>
-        <p class="panel-p">Dieses Tool berechnet den <strong>Mittenabstand</strong> zweier Bohrlöcher sowie den <strong>Lochdurchmesser</strong> — ausgehend von den messbaren Außen- und Innenkanten. So lassen sich präzise CAD-Maße direkt aus Schieblehren-Messungen ableiten, ohne manuell rechnen zu müssen.</p>
+        <h3 data-i18n="info.purposeH"></h3>
+        <p class="panel-p" data-i18n-html="info.purpose"></p>
       </div>
       <div class="panel-section">
-        <h3>Einsatzbereich</h3>
+        <h3 data-i18n="info.useH"></h3>
         <ul class="panel-ul">
-          <li>Reverse Engineering von Bauteilen und Gehäusen</li>
-          <li>Übertragung von Maßen in CAD-Software (z. B. Fusion 360)</li>
-          <li>Vorbereitung von Bohrbildern für den 3D-Druck oder CNC-Fräsen</li>
-          <li>Qualitätskontrolle gefertigter Teile</li>
+          <li data-i18n="info.use1"></li>
+          <li data-i18n="info.use2"></li>
+          <li data-i18n="info.use3"></li>
+          <li data-i18n="info.use4"></li>
         </ul>
       </div>
       <div class="panel-section">
-        <h3>Datenspeicherung</h3>
-        <p class="panel-p">Alle Messungen werden ausschließlich lokal im Browser gespeichert (localStorage). Es werden keine Daten übertragen oder in der Cloud abgelegt. Die App funktioniert vollständig offline.</p>
+        <h3 data-i18n="info.storageH"></h3>
+        <p class="panel-p" data-i18n="info.storage"></p>
       </div>
       <div class="panel-section">
-        <h3>Version</h3>
-        <p class="panel-p" style="font-family:'DM Mono',monospace;font-size:12px;">v2.3 · dark · 11.10.2026 · 4-Loch-Grafik</p>
+        <h3 data-i18n="info.versionH"></h3>
+        <p class="panel-p" style="font-family:var(--mono);font-size:12px;" data-i18n="info.version"></p>
+      </div>
+      <div class="panel-section">
+        <h3 data-i18n="info.legalH"></h3>
+        <p class="panel-p" data-i18n-html="info.copyright"></p>
+        <p class="panel-p" data-i18n-html="info.license"></p>
+        <p class="panel-p" data-i18n-html="info.source"></p>
+        <p class="panel-p" data-i18n-html="info.icon"></p>
+        <p class="panel-p" data-i18n="info.disclaimer"></p>
       </div>
     </div>
   </div>
 
 </div>
 
+<script src="i18n.js"></script>
 <script>
 const FIELD_ORDER = ['b_aussen','b_innen','h_aussen','h_innen'];
+const LANG_KEY = 'bhr_lang';
 let lastMb = null, lastMh = null, lastD = null, lastDAvg = null, activeId = null;
+let lang = 'en';
+
+/* ── i18n ── */
+function t(key, vars) {
+  let s = (I18N[lang] && I18N[lang][key]) ?? I18N.en[key] ?? key;
+  for (const k in vars) s = s.split('{' + k + '}').join(vars[k]);
+  return s;
+}
+
+function initialLang() {
+  try {
+    const saved = localStorage.getItem(LANG_KEY);
+    if (saved && I18N[saved]) return saved;
+  } catch(e) {}
+  const code = (navigator.language || 'en').slice(0, 2).toLowerCase();
+  return I18N[code] ? code : 'en';
+}
+
+function applyI18n() {
+  document.documentElement.lang = lang;
+  document.title = t('app.title');
+  const each = (attr, fn) => document.querySelectorAll('[' + attr + ']').forEach(el => fn(el, t(el.getAttribute(attr))));
+  each('data-i18n', (el, s) => el.textContent = s);
+  each('data-i18n-html', (el, s) => el.innerHTML = s);   // only static, trusted strings from i18n.js
+  each('data-i18n-placeholder', (el, s) => el.placeholder = s);
+  each('data-i18n-title', (el, s) => el.title = s);
+  each('data-i18n-aria', (el, s) => el.setAttribute('aria-label', s));
+  document.getElementById('lang_menu').innerHTML = Object.keys(I18N).map(code =>
+    `<li><button class="lang-item${code === lang ? ' active' : ''}" lang="${code}" onclick="setLang('${code}')">${esc(I18N[code]['lang.name'])}</button></li>`
+  ).join('');
+}
+
+function setLang(code) {
+  if (!I18N[code]) return;
+  lang = code;
+  try { localStorage.setItem(LANG_KEY, code); } catch(e) {}
+  closeLangMenu();
+  applyI18n();
+  calc();
+  renderArchive();
+}
+
+function toggleLangMenu(e) {
+  e.stopPropagation();
+  const menu = document.getElementById('lang_menu');
+  menu.hidden = !menu.hidden;
+  document.getElementById('lang_btn').setAttribute('aria-expanded', String(!menu.hidden));
+}
+function closeLangMenu() {
+  document.getElementById('lang_menu').hidden = true;
+  document.getElementById('lang_btn').setAttribute('aria-expanded', 'false');
+}
+document.addEventListener('click', closeLangMenu);
+document.addEventListener('keydown', e => { if (e.key === 'Escape') closeLangMenu(); });
 
 /* ── Auto-Focus via Enter/Tab ── */
 function handleKey(e, id) {
@@ -556,7 +652,7 @@ function calc() {
 
   if (!isNaN(ba) && !isNaN(bi) && ba > 0 && bi > 0) {
     if (bi >= ba) {
-      document.getElementById('warn_b').textContent = '⚠ Innenkante muss kleiner als Außenkante sein.';
+      document.getElementById('warn_b').textContent = t('warn.innerGtOuter');
     } else {
       mb = Math.round(((ba + bi) / 2) * 100) / 100;
       db = Math.round(((ba - bi) / 2) * 100) / 100;
@@ -568,7 +664,7 @@ function calc() {
 
   if (!isNaN(ha) && !isNaN(hi) && ha > 0 && hi > 0) {
     if (hi >= ha) {
-      document.getElementById('warn_h').textContent = '⚠ Innenkante muss kleiner als Außenkante sein.';
+      document.getElementById('warn_h').textContent = t('warn.innerGtOuter');
     } else {
       mh = Math.round(((ha + hi) / 2) * 100) / 100;
       dh = Math.round(((ha - hi) / 2) * 100) / 100;
@@ -590,18 +686,18 @@ function calc() {
     } else {
       dEl.className = 'val muted';
       dEl.textContent = '≠';
-      dSub.textContent = 'B: ' + db.toFixed(2) + ' · H: ' + dh.toFixed(2) + ' mm';
+      dSub.textContent = t('results.mismatch', {w: db.toFixed(2), h: dh.toFixed(2)});
       lastD = db;
     }
   } else if (db !== null) {
     dEl.className = 'val accent';
     dEl.textContent = db.toFixed(2) + ' mm';
-    dSub.textContent = 'aus Breite';
+    dSub.textContent = t('results.fromWidth');
     lastD = db;
   } else if (dh !== null) {
     dEl.className = 'val accent';
     dEl.textContent = dh.toFixed(2) + ' mm';
-    dSub.textContent = 'aus Höhe';
+    dSub.textContent = t('results.fromHeight');
     lastD = dh;
   } else {
     dEl.className = 'val accent';
@@ -623,11 +719,12 @@ function exportFusionCsv() {
   let name = document.getElementById('mess_title').value
     .replace(/[äöüÄÖÜß]/g, c => uml[c])
     .replace(/[^A-Za-z0-9_]+/g, '_').replace(/^_+|_+$/g, '');
-  if (!name) { alert('Bitte einen Projektnamen eingeben (nur Buchstaben/Ziffern ergeben einen gültigen Parameternamen).'); return; }
+  if (!name) { alert(t('csv.needName')); return; }
   if (/^\d/.test(name)) name = '_' + name;
   const day = new Date().toLocaleDateString('sv-SE'); // YYYY-MM-DD, lokale Zeit
-  const row = (suffix, v) => `${name}_bl_${suffix},mm,${v} mm,${v.toFixed(2)},Messung vom: ${day},false`;
-  const csv = ['Name,Einheit,Ausdruck,Wert,Kommentare,Favorit',
+  const field = s => /[",\r\n]/.test(s) ? '"' + s.replace(/"/g, '""') + '"' : s;
+  const row = (suffix, v) => `${name}_bl_${suffix},mm,${v} mm,${v.toFixed(2)},${field(t('csv.comment', {d: day}))},false`;
+  const csv = [t('csv.header'),
     row('h', lastMb), row('v', lastMh), row('dia', lastDAvg)].join('\r\n') + '\r\n';
   const a = document.createElement('a');
   a.href = URL.createObjectURL(new Blob([csv], {type:'text/csv;charset=utf-8'}));
@@ -638,15 +735,12 @@ function exportFusionCsv() {
 
 /* ── Save measurement ── */
 function saveMeasurement() {
-  const title = document.getElementById('mess_title').value.trim() || 'Projekt ohne Namen';
-  const now = new Date();
-  const dateStr = now.toLocaleDateString('de-DE', {day:'2-digit',month:'2-digit',year:'numeric'})
-    + ' ' + now.toLocaleTimeString('de-DE', {hour:'2-digit',minute:'2-digit'});
+  const title = document.getElementById('mess_title').value.trim();   // leer = Standardname beim Anzeigen (i18n)
 
   const entry = {
     id: Date.now(),
+    ts: Date.now(),
     title,
-    date: dateStr,
     b_aussen: document.getElementById('b_aussen').value,
     b_innen:  document.getElementById('b_innen').value,
     h_aussen: document.getElementById('h_aussen').value,
@@ -668,9 +762,9 @@ function saveMeasurement() {
   renderArchive();
 
   const btn = document.getElementById('save_btn');
-  btn.textContent = '✓ Gespeichert';
+  btn.textContent = t('btn.saved');
   btn.classList.add('saved');
-  setTimeout(() => { btn.textContent = 'Messung speichern'; btn.classList.remove('saved'); }, 1800);
+  setTimeout(() => { btn.textContent = t('btn.save'); btn.classList.remove('saved'); }, 1800);
 }
 
 /* ── Archive DB ── */
@@ -694,6 +788,12 @@ function deleteMeasurement(id, e) {
   renderArchive();
 }
 
+function formatStamp(ms) {
+  const d = new Date(ms);
+  return d.toLocaleDateString(lang, {day:'2-digit',month:'2-digit',year:'numeric'})
+    + ' ' + d.toLocaleTimeString(lang, {hour:'2-digit',minute:'2-digit'});
+}
+
 function renderArchive() {
   const db = getDB();
   document.getElementById('arch_count').textContent = db.length;
@@ -701,7 +801,7 @@ function renderArchive() {
   if (!list) return;
 
   if (!db.length) {
-    list.innerHTML = '<div class="archive-empty">Noch keine Messungen gespeichert.</div>';
+    list.innerHTML = '<div class="archive-empty">' + esc(t('archive.empty')) + '</div>';
     return;
   }
 
@@ -709,16 +809,17 @@ function renderArchive() {
     const isActive = e.id === activeId;
     const mbStr = e.mb ? e.mb.toFixed(2) : '—';
     const mhStr = e.mh ? e.mh.toFixed(2) : '—';
-    const dStr  = e.d  ? 'Ø ' + e.d.toFixed(2) + ' mm' : '';
+    const dStr  = e.d  ? t('archive.dia', {d: e.d.toFixed(2)}) : '';
+    const dash = '—';
     return `<div class="archive-item${isActive?' active':''}" onclick='loadEntry(${e.id})'>
-      <button class="del-btn" onclick="deleteMeasurement(${e.id},event)" title="Löschen">✕</button>
-      <div class="a-title">${esc(e.title)}</div>
+      <button class="del-btn" onclick="deleteMeasurement(${e.id},event)" title="${esc(t('btn.delete'))}">✕</button>
+      <div class="a-title">${esc(e.title || t('project.default'))}</div>
       <div class="a-vals">
-        B: ${e.b_aussen||'—'} / ${e.b_innen||'—'} mm<br>
-        H: ${e.h_aussen||'—'} / ${e.h_innen||'—'} mm<br>
-        → ${mbStr} × ${mhStr} mm${dStr?' · '+dStr:''}
+        ${esc(t('archive.width', {a: e.b_aussen || dash, i: e.b_innen || dash}))}<br>
+        ${esc(t('archive.height', {a: e.h_aussen || dash, i: e.h_innen || dash}))}<br>
+        ${esc(t('archive.result', {mb: mbStr, mh: mhStr}))}${dStr ? ' · ' + esc(dStr) : ''}
       </div>
-      <div class="a-date">${e.date}</div>
+      <div class="a-date">${formatStamp(e.ts || e.id)}</div>
     </div>`;
   }).join('');
 }
@@ -730,7 +831,7 @@ function loadEntry(id) {
 }
 
 function esc(s) {
-  return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+  return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
 }
 
 /* ── Panels ── */
@@ -765,6 +866,7 @@ function drawDiagram(mb, mh, d) {
   const colBorder = '#333333';
   const colDiam   = '#22d3ee';
   const colBg     = '#0f0f0f';
+  const mono = "ui-monospace,'Cascadia Mono',Consolas,monospace";
 
   const H = 230;
   const bw = 280, bh = 150;
@@ -796,7 +898,7 @@ function drawDiagram(mb, mh, d) {
     out += `<line x1="${le}" y1="${cy4-r}" x2="${le}" y2="${cy4+r}" stroke="${colDiam}" stroke-width="1"/>`;
     out += `<line x1="${le-4}" y1="${cy4-r}" x2="${le+4}" y2="${cy4-r}" stroke="${colDiam}" stroke-width="1"/>`;
     out += `<line x1="${le-4}" y1="${cy4+r}" x2="${le+4}" y2="${cy4+r}" stroke="${colDiam}" stroke-width="1"/>`;
-    out += `<text x="${le+8}" y="${cy4+4}" font-size="11" fill="${colDiam}" font-family="DM Mono,monospace">Ø ${d.toFixed(2)}</text>`;
+    out += `<text x="${le+8}" y="${cy4+4}" font-size="11" fill="${colDiam}" font-family="${mono}">Ø ${d.toFixed(2)}</text>`;
   }
 
   // Horizontale Maßlinie (zwischen oben links und oben rechts)
@@ -805,7 +907,7 @@ function drawDiagram(mb, mh, d) {
   out += `<line x1="${cx1}" y1="${yD}" x2="${cx2}" y2="${yD}" stroke="${colDim}" stroke-width="0.8"/>`;
   out += `<line x1="${cx1}" y1="${yD-4}" x2="${cx1}" y2="${yD+4}" stroke="${colDim}" stroke-width="0.8"/>`;
   out += `<line x1="${cx2}" y1="${yD-4}" x2="${cx2}" y2="${yD+4}" stroke="${colDim}" stroke-width="0.8"/>`;
-  out += `<text x="${(cx1+cx2)/2}" y="${H}" text-anchor="middle" font-size="11" fill="${colDim}" font-family="DM Mono,monospace">${lblB}</text>`;
+  out += `<text x="${(cx1+cx2)/2}" y="${H}" text-anchor="middle" font-size="11" fill="${colDim}" font-family="${mono}">${lblB}</text>`;
 
   // Vertikale Maßlinie (zwischen oben links und unten links)
   const lblH = mh ? mh.toFixed(2)+' mm' : '?';
@@ -813,21 +915,22 @@ function drawDiagram(mb, mh, d) {
   out += `<line x1="${xD}" y1="${cy1}" x2="${xD}" y2="${cy3}" stroke="${colDim}" stroke-width="0.8"/>`;
   out += `<line x1="${xD-4}" y1="${cy1}" x2="${xD+4}" y2="${cy1}" stroke="${colDim}" stroke-width="0.8"/>`;
   out += `<line x1="${xD-4}" y1="${cy3}" x2="${xD+4}" y2="${cy3}" stroke="${colDim}" stroke-width="0.8"/>`;
-  out += `<text x="${xD}" y="${(cy1+cy3)/2+4}" text-anchor="middle" font-size="11" fill="${colDim}" font-family="DM Mono,monospace" transform="rotate(-90,${xD},${(cy1+cy3)/2+4})">${lblH}</text>`;
+  out += `<text x="${xD}" y="${(cy1+cy3)/2+4}" text-anchor="middle" font-size="11" fill="${colDim}" font-family="${mono}" transform="rotate(-90,${xD},${(cy1+cy3)/2+4})">${lblH}</text>`;
 
   // Beschriftung der 4 Bohrlöcher
-  out += `<text x="${cx1+r+5}" y="${cy1-r-4}" font-size="10" fill="${colHole}" font-family="DM Mono,monospace">Loch 1</text>`;
-  out += `<text x="${cx2-r-38}" y="${cy2-r-4}" font-size="10" fill="${colHole}" font-family="DM Mono,monospace">Loch 2</text>`;
-  out += `<text x="${cx3+r+5}" y="${cy3+r+14}" font-size="10" fill="${colHole}" font-family="DM Mono,monospace">Loch 3</text>`;
-  out += `<text x="${cx4-r-38}" y="${cy4+r+14}" font-size="10" fill="${colHole}" font-family="DM Mono,monospace">Loch 4</text>`;
+  out += `<text x="${cx1+r+5}" y="${cy1-r-4}" font-size="10" fill="${colHole}" font-family="${mono}">${esc(t('diagram.hole', {n: 1}))}</text>`;
+  out += `<text x="${cx2-r-38}" y="${cy2-r-4}" font-size="10" fill="${colHole}" font-family="${mono}">${esc(t('diagram.hole', {n: 2}))}</text>`;
+  out += `<text x="${cx3+r+5}" y="${cy3+r+14}" font-size="10" fill="${colHole}" font-family="${mono}">${esc(t('diagram.hole', {n: 3}))}</text>`;
+  out += `<text x="${cx4-r-38}" y="${cy4+r+14}" font-size="10" fill="${colHole}" font-family="${mono}">${esc(t('diagram.hole', {n: 4}))}</text>`;
 
   svg.innerHTML = out;
 }
 
 /* ── Init ── */
+lang = initialLang();
+applyI18n();
 loadState();
 renderArchive();
-drawDiagram(null, null, null);
 document.getElementById('b_aussen').focus();
 </script>
 </body>
