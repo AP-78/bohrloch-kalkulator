@@ -88,7 +88,7 @@ const I18N = {
     'info.copyright': '© 2026 AP-78 · <a href="mailto:kontakt@ap78.de">kontakt@ap78.de</a>',
     'info.license': 'Freie Software unter der <a href="https://www.gnu.org/licenses/gpl-3.0.html" target="_blank" rel="noopener">GNU GPL v3.0 oder neuer</a> — ohne jede Gewährleistung.',
     'info.source': 'Quellcode: <a href="https://github.com/AP-78/bohrloch-kalkulator" target="_blank" rel="noopener">github.com/AP-78/bohrloch-kalkulator</a>',
-    'info.icon': 'Sprach-Icon: <a href="https://fontawesome.com/license/free" target="_blank" rel="noopener">Font Awesome Free</a> (CC BY 4.0)',
+    'info.icon': 'Icons: <a href="https://fontawesome.com/license/free" target="_blank" rel="noopener">Font Awesome Free</a> (CC BY 4.0)',
     'info.disclaimer': 'Dieses Projekt steht in keiner Verbindung zu Autodesk. Fusion 360 ist eine Marke von Autodesk, Inc. Alle Ergebnisse ohne Gewähr — Maße vor der Fertigung prüfen.',
 
     'footer.text': 'bohrloch-rechner.html · läuft vollständig offline · Daten werden lokal im Browser gespeichert · v3.0 DARK · 4-Loch-Grafik ✓',
@@ -174,7 +174,7 @@ const I18N = {
     'info.copyright': '© 2026 AP-78 · <a href="mailto:kontakt@ap78.de">kontakt@ap78.de</a>',
     'info.license': 'Free software under the <a href="https://www.gnu.org/licenses/gpl-3.0.html" target="_blank" rel="noopener">GNU GPL v3.0 or later</a> — without any warranty.',
     'info.source': 'Source code: <a href="https://github.com/AP-78/bohrloch-kalkulator" target="_blank" rel="noopener">github.com/AP-78/bohrloch-kalkulator</a>',
-    'info.icon': 'Language icon: <a href="https://fontawesome.com/license/free" target="_blank" rel="noopener">Font Awesome Free</a> (CC BY 4.0)',
+    'info.icon': 'Icons: <a href="https://fontawesome.com/license/free" target="_blank" rel="noopener">Font Awesome Free</a> (CC BY 4.0)',
     'info.disclaimer': 'This project is not affiliated with Autodesk. Fusion 360 is a trademark of Autodesk, Inc. All results without warranty — verify dimensions before manufacturing.',
 
     'footer.text': 'bohrloch-rechner.html · runs completely offline · data is stored locally in the browser · v3.0 DARK · 4-hole diagram ✓',

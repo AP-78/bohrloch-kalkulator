@@ -49,7 +49,7 @@ This program is free software: you can redistribute it and/or modify it under th
 GNU General Public License as published by the Free Software Foundation, either version 3 of the License,
 or (at your option) any later version. It is distributed without any warranty. See [LICENSE](LICENSE).
 
-The language icon is [Font Awesome Free](https://fontawesome.com/license/free) (icons: CC BY 4.0), embedded with its original attribution comment.
+The language and favicon icons are [Font Awesome Free](https://fontawesome.com/license/free) (icons: CC BY 4.0), embedded with its original attribution comment.
 Fusion 360 is a trademark of Autodesk, Inc.; this project is not affiliated with Autodesk.
 
 ---
