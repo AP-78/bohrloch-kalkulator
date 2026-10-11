@@ -626,7 +626,7 @@ function exportFusionCsv() {
   if (!name) { alert('Bitte einen Projektnamen eingeben (nur Buchstaben/Ziffern ergeben einen gültigen Parameternamen).'); return; }
   if (/^\d/.test(name)) name = '_' + name;
   const day = new Date().toLocaleDateString('sv-SE'); // YYYY-MM-DD, lokale Zeit
-  const row = (suffix, v) => `${name}_bl_${suffix},mm,${v} mm,${v.toFixed(2)},${day},false`;
+  const row = (suffix, v) => `${name}_bl_${suffix},mm,${v} mm,${v.toFixed(2)},Messung vom: ${day},false`;
   const csv = ['Name,Einheit,Ausdruck,Wert,Kommentare,Favorit',
     row('h', lastMb), row('v', lastMh), row('dia', lastDAvg)].join('\r\n') + '\r\n';
   const a = document.createElement('a');
