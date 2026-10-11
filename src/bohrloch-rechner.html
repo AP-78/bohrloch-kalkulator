@@ -28,6 +28,7 @@
   --radius:6px;
   --radius-lg:10px;
   --sidebar:300px;
+  --content-w:720px;
   --font:system-ui,-apple-system,'Segoe UI',Roboto,'Helvetica Neue',Arial,sans-serif;
   --mono:ui-monospace,'Cascadia Mono','SF Mono',Consolas,'Liberation Mono',monospace;
 }
@@ -46,12 +47,22 @@ body {
 body.sidebar-open { padding-right:calc(var(--sidebar) + 2rem); }
 
 header {
-  width:100%;max-width:640px;margin-bottom:1.5rem;
-  display:flex;align-items:center;justify-content:space-between;
+  width:100%;max-width:var(--content-w);margin-bottom:1.5rem;
+  display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;
 }
 header h1 { font-size:20px;font-weight:500;letter-spacing:-0.02em; }
 header .header-right { display:flex;align-items:center;gap:12px; }
 header .version { font-size:12px;color:var(--text3);font-family:var(--mono); }
+
+/* UNIT SWITCH */
+.unit-switch { display:flex;border:1px solid var(--border);border-radius:var(--radius);overflow:hidden; }
+.unit-switch button {
+  height:28px;padding:0 10px;background:transparent;color:var(--text2);border:none;
+  font-size:12px;font-family:var(--mono);cursor:pointer;transition:background 0.12s,color 0.12s;
+}
+.unit-switch button:first-child { border-right:1px solid var(--border); }
+.unit-switch button:hover { background:var(--surface2);color:var(--text); }
+.unit-switch button.active { background:var(--blue);color:var(--bg); }
 
 /* LANGUAGE SWITCH */
 .lang-wrap { position:relative; }
@@ -78,7 +89,7 @@ header .version { font-size:12px;color:var(--text3);font-family:var(--mono); }
 .title-card {
   background:var(--surface);border:1px solid var(--border);
   border-radius:var(--radius-lg);padding:0.9rem 1.5rem;
-  width:100%;max-width:640px;margin-bottom:1rem;
+  width:100%;max-width:var(--content-w);margin-bottom:1rem;
   display:flex;align-items:center;gap:12px;
 }
 .title-card label { font-size:12px;color:var(--text2);white-space:nowrap; }
@@ -96,7 +107,7 @@ header .version { font-size:12px;color:var(--text3);font-family:var(--mono); }
 .card {
   background:var(--surface);border:1px solid var(--border);
   border-radius:var(--radius-lg);padding:1.5rem;
-  width:100%;max-width:640px;margin-bottom:1rem;
+  width:100%;max-width:var(--content-w);margin-bottom:1rem;
 }
 .card-title {
   font-size:11px;font-weight:500;letter-spacing:0.08em;
@@ -105,8 +116,8 @@ header .version { font-size:12px;color:var(--text3);font-family:var(--mono); }
 }
 .card-title::after { content:'';flex:1;height:1px;background:var(--border); }
 
-.input-grid { display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:10px; }
-.field { display:flex;flex-direction:column;gap:5px; }
+.input-grid { display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:12px;margin-bottom:10px; }
+.field { display:flex;flex-direction:column;gap:5px;min-width:0; }
 .field label { font-size:12px;color:var(--text2); }
 
 .input-wrap { display:flex;align-items:center;gap:8px; }
@@ -154,7 +165,7 @@ header .version { font-size:12px;color:var(--text3);font-family:var(--mono); }
 /* RESULTS */
 .results-card {
   background:var(--surface);border:1px solid var(--border);
-  border-radius:var(--radius-lg);width:100%;max-width:640px;
+  border-radius:var(--radius-lg);width:100%;max-width:var(--content-w);
   overflow:hidden;margin-bottom:1rem;
 }
 .results-header {
@@ -178,7 +189,7 @@ header .version { font-size:12px;color:var(--text3);font-family:var(--mono); }
 
 /* SAVE ROW */
 .save-row {
-  width:100%;max-width:640px;display:flex;
+  width:100%;max-width:var(--content-w);display:flex;
   justify-content:flex-end;gap:8px;margin-bottom:1rem;
 }
 .save-btn {
@@ -203,7 +214,7 @@ header .version { font-size:12px;color:var(--text3);font-family:var(--mono); }
 .diagram-card {
   background:var(--surface);border:1px solid var(--border);
   border-radius:var(--radius-lg);padding:1.5rem;
-  width:100%;max-width:640px;
+  width:100%;max-width:var(--content-w);
 }
 .diagram-card svg { width:100%;display:block; }
 
@@ -323,7 +334,11 @@ footer { margin-top:2rem;font-size:11px;color:var(--text3);font-family:var(--mon
 <header>
   <h1 data-i18n="app.title"></h1>
   <div class="header-right">
-    <span class="version">v3.0 · dark</span>
+    <span class="version">v3.1 · dark</span>
+    <div class="unit-switch" role="group" data-i18n-aria="unit.switch">
+      <button id="unit_mm" onclick="setUnit('mm')" data-i18n="unit.switchMm"></button>
+      <button id="unit_inch" onclick="setUnit('inch')" data-i18n="unit.switchInch"></button>
+    </div>
     <div class="lang-wrap">
       <button class="lang-btn" id="lang_btn" onclick="toggleLangMenu(event)" aria-haspopup="true" aria-expanded="false" data-i18n-title="lang.label" data-i18n-aria="lang.label">
         <!-- Font Awesome Free 6.7.2 "language" (solid) by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2024 Fonticons, Inc. -->
@@ -346,24 +361,24 @@ footer { margin-top:2rem;font-size:11px;color:var(--text3);font-family:var(--mon
       <label data-i18n="field.outer"></label>
       <div class="input-wrap">
         <input type="number" id="b_aussen" data-i18n-placeholder="field.placeholder" min="0" step="0.1"
-               oninput="calc()" onkeydown="handleKey(event,'b_aussen')">
+               oninput="onInput('b_aussen')" onkeydown="handleKey(event,'b_aussen')">
         <div class="btn-group">
-          <button class="step-btn" onclick="step('b_aussen',-0.1)" tabindex="-1">−</button>
-          <button class="step-btn" onclick="step('b_aussen',0.1)" tabindex="-1">+</button>
+          <button class="step-btn" onclick="step('b_aussen',-1)" tabindex="-1">−</button>
+          <button class="step-btn" onclick="step('b_aussen',1)" tabindex="-1">+</button>
         </div>
-        <span class="unit-label">mm</span>
+        <span class="unit-label"></span>
       </div>
     </div>
     <div class="field">
       <label data-i18n="field.inner"></label>
       <div class="input-wrap">
         <input type="number" id="b_innen" data-i18n-placeholder="field.placeholder" min="0" step="0.1"
-               oninput="calc()" onkeydown="handleKey(event,'b_innen')">
+               oninput="onInput('b_innen')" onkeydown="handleKey(event,'b_innen')">
         <div class="btn-group">
-          <button class="step-btn" onclick="step('b_innen',-0.1)" tabindex="-1">−</button>
-          <button class="step-btn" onclick="step('b_innen',0.1)" tabindex="-1">+</button>
+          <button class="step-btn" onclick="step('b_innen',-1)" tabindex="-1">−</button>
+          <button class="step-btn" onclick="step('b_innen',1)" tabindex="-1">+</button>
         </div>
-        <span class="unit-label">mm</span>
+        <span class="unit-label"></span>
       </div>
     </div>
   </div>
@@ -378,24 +393,24 @@ footer { margin-top:2rem;font-size:11px;color:var(--text3);font-family:var(--mon
       <label data-i18n="field.outer"></label>
       <div class="input-wrap">
         <input type="number" id="h_aussen" data-i18n-placeholder="field.placeholder" min="0" step="0.1"
-               oninput="calc()" onkeydown="handleKey(event,'h_aussen')">
+               oninput="onInput('h_aussen')" onkeydown="handleKey(event,'h_aussen')">
         <div class="btn-group">
-          <button class="step-btn" onclick="step('h_aussen',-0.1)" tabindex="-1">−</button>
-          <button class="step-btn" onclick="step('h_aussen',0.1)" tabindex="-1">+</button>
+          <button class="step-btn" onclick="step('h_aussen',-1)" tabindex="-1">−</button>
+          <button class="step-btn" onclick="step('h_aussen',1)" tabindex="-1">+</button>
         </div>
-        <span class="unit-label">mm</span>
+        <span class="unit-label"></span>
       </div>
     </div>
     <div class="field">
       <label data-i18n="field.inner"></label>
       <div class="input-wrap">
         <input type="number" id="h_innen" data-i18n-placeholder="field.placeholder" min="0" step="0.1"
-               oninput="calc()" onkeydown="handleKey(event,'h_innen')">
+               oninput="onInput('h_innen')" onkeydown="handleKey(event,'h_innen')">
         <div class="btn-group">
-          <button class="step-btn" onclick="step('h_innen',-0.1)" tabindex="-1">−</button>
-          <button class="step-btn" onclick="step('h_innen',0.1)" tabindex="-1">+</button>
+          <button class="step-btn" onclick="step('h_innen',-1)" tabindex="-1">−</button>
+          <button class="step-btn" onclick="step('h_innen',1)" tabindex="-1">+</button>
         </div>
-        <span class="unit-label">mm</span>
+        <span class="unit-label"></span>
       </div>
     </div>
   </div>
@@ -475,6 +490,7 @@ footer { margin-top:2rem;font-size:11px;color:var(--text3);font-family:var(--mon
           <li data-i18n-html="guide.i7"></li>
           <li data-i18n-html="guide.i8"></li>
           <li data-i18n-html="guide.i9"></li>
+          <li data-i18n-html="guide.i10"></li>
         </ul>
       </div>
       <div class="panel-section">
@@ -535,6 +551,22 @@ const LANG_KEY = 'bhr_lang';
 let lastMb = null, lastMh = null, lastD = null, lastDAvg = null, activeId = null;
 let lang = 'en';
 
+/* ── Units: intern immer mm (store), Anzeige/Eingabe in der gewählten Einheit ── */
+const UNIT_KEY = 'bhr_unit';
+const UNITS = {
+  mm:   { f: 1,    dec: 2, step: 0.1,   csv: 'mm', label: 'unit.mm' },
+  inch: { f: 25.4, dec: 4, step: 0.001, csv: 'in', label: 'unit.inch' }
+};
+let unit = 'mm';
+const store = {b_aussen: null, b_innen: null, h_aussen: null, h_innen: null};   // mm
+const unitLabel = () => t(UNITS[unit].label);
+const fmtNum = mm => (mm / UNITS[unit].f).toFixed(UNITS[unit].dec);            // Ergebnisse
+const toDisplay = mm => mm == null ? '' : String(+(mm / UNITS[unit].f).toFixed(4));  // Eingabefelder
+const uiVars = () => ({
+  u: unitLabel(),
+  step: UNITS[unit].step.toLocaleString(lang, {maximumFractionDigits: 3}) + ' ' + unitLabel()
+});
+
 /* ── i18n ── */
 function t(key, vars) {
   let s = (I18N[lang] && I18N[lang][key]) ?? I18N.en[key] ?? key;
@@ -554,7 +586,7 @@ function initialLang() {
 function applyI18n() {
   document.documentElement.lang = lang;
   document.title = t('app.title');
-  const each = (attr, fn) => document.querySelectorAll('[' + attr + ']').forEach(el => fn(el, t(el.getAttribute(attr))));
+  const each = (attr, fn) => document.querySelectorAll('[' + attr + ']').forEach(el => fn(el, t(el.getAttribute(attr), uiVars())));
   each('data-i18n', (el, s) => el.textContent = s);
   each('data-i18n-html', (el, s) => el.innerHTML = s);   // only static, trusted strings from i18n.js
   each('data-i18n-placeholder', (el, s) => el.placeholder = s);
@@ -571,8 +603,45 @@ function setLang(code) {
   try { localStorage.setItem(LANG_KEY, code); } catch(e) {}
   closeLangMenu();
   applyI18n();
+  applyUnitUi();
   calc();
   renderArchive();
+}
+
+function initialUnit() {
+  try { const u = localStorage.getItem(UNIT_KEY); if (UNITS[u]) return u; } catch(e) {}
+  return 'mm';
+}
+
+function setUnit(u) {
+  if (!UNITS[u]) return;
+  unit = u;
+  try { localStorage.setItem(UNIT_KEY, u); } catch(e) {}
+  refreshFields();
+  applyI18n();      // Anleitung enthält die Schrittweite
+  applyUnitUi();
+  calc();
+  renderArchive();
+}
+
+function applyUnitUi() {
+  document.querySelectorAll('.unit-label').forEach(el => el.textContent = unitLabel());
+  FIELD_ORDER.forEach(f => document.getElementById(f).step = UNITS[unit].step);
+  ['mm', 'inch'].forEach(u => {
+    const b = document.getElementById('unit_' + u);
+    b.classList.toggle('active', u === unit);
+    b.setAttribute('aria-pressed', String(u === unit));
+  });
+}
+
+function refreshFields() {
+  FIELD_ORDER.forEach(f => document.getElementById(f).value = toDisplay(store[f]));
+}
+
+function onInput(id) {
+  const v = parseFloat(document.getElementById(id).value);
+  store[id] = isNaN(v) ? null : v * UNITS[unit].f;
+  calc();
 }
 
 function toggleLangMenu(e) {
@@ -605,17 +674,17 @@ document.addEventListener('focusin', e => {
 });
 
 /* ── ±0.1 buttons ── */
-function step(id, delta) {
+function step(id, dir) {
   const el = document.getElementById(id);
   const val = parseFloat(el.value) || 0;
-  el.value = Math.max(0, Math.round((val + delta) * 10) / 10).toFixed(1);
-  calc();
+  const st = UNITS[unit].step, dec = unit === 'mm' ? 1 : 3;
+  el.value = Math.max(0, +(val + dir * st).toFixed(dec)).toFixed(dec);
+  onInput(id);
 }
 
 /* ── Persist last session ── */
 function saveState() {
-  const s = {};
-  FIELD_ORDER.forEach(f => s[f] = document.getElementById(f).value);
+  const s = {mm: store};
   s.title = document.getElementById('mess_title').value;
   localStorage.setItem('bhr_last', JSON.stringify(s));
 }
@@ -623,7 +692,11 @@ function saveState() {
 function loadState() {
   try {
     const s = JSON.parse(localStorage.getItem('bhr_last') || '{}');
-    FIELD_ORDER.forEach(f => { if (s[f]) document.getElementById(f).value = s[f]; });
+    FIELD_ORDER.forEach(f => {
+      const v = parseFloat(s.mm ? s.mm[f] : s[f]);   // s[f]: Altformat (mm-Strings)
+      store[f] = isNaN(v) ? null : v;
+    });
+    refreshFields();
     if (s.title) document.getElementById('mess_title').value = s.title;
   } catch(e) {}
   calc();
@@ -631,7 +704,8 @@ function loadState() {
 
 /* ── Clear form ── */
 function clearForm() {
-  FIELD_ORDER.forEach(f => document.getElementById(f).value = '');
+  FIELD_ORDER.forEach(f => { store[f] = null; });
+  refreshFields();
   document.getElementById('mess_title').value = '';
   activeId = null;
   renderArchive();
@@ -642,10 +716,7 @@ function clearForm() {
 /* ── Main calculation ── */
 function calc() {
   saveState();
-  const ba = parseFloat(document.getElementById('b_aussen').value);
-  const bi = parseFloat(document.getElementById('b_innen').value);
-  const ha = parseFloat(document.getElementById('h_aussen').value);
-  const hi = parseFloat(document.getElementById('h_innen').value);
+  const [ba, bi, ha, hi] = FIELD_ORDER.map(f => store[f] ?? NaN);   // mm
 
   let mb = null, mh = null, db = null, dh = null;
   document.getElementById('warn_b').textContent = '';
@@ -657,7 +728,7 @@ function calc() {
     } else {
       mb = Math.round(((ba + bi) / 2) * 100) / 100;
       db = Math.round(((ba - bi) / 2) * 100) / 100;
-      document.getElementById('res_b').textContent = mb.toFixed(2) + ' mm';
+      document.getElementById('res_b').textContent = fmtNum(mb) + ' ' + unitLabel();
     }
   } else {
     document.getElementById('res_b').textContent = '—';
@@ -669,7 +740,7 @@ function calc() {
     } else {
       mh = Math.round(((ha + hi) / 2) * 100) / 100;
       dh = Math.round(((ha - hi) / 2) * 100) / 100;
-      document.getElementById('res_h').textContent = mh.toFixed(2) + ' mm';
+      document.getElementById('res_h').textContent = fmtNum(mh) + ' ' + unitLabel();
     }
   } else {
     document.getElementById('res_h').textContent = '—';
@@ -681,23 +752,23 @@ function calc() {
   if (db !== null && dh !== null) {
     if (Math.abs(db - dh) < 0.01) {
       dEl.className = 'val accent';
-      dEl.textContent = db.toFixed(2) + ' mm';
+      dEl.textContent = fmtNum(db) + ' ' + unitLabel();
       dSub.textContent = '';
       lastD = db;
     } else {
       dEl.className = 'val muted';
       dEl.textContent = '≠';
-      dSub.textContent = t('results.mismatch', {w: db.toFixed(2), h: dh.toFixed(2)});
+      dSub.textContent = t('results.mismatch', {w: fmtNum(db), h: fmtNum(dh), u: unitLabel()});
       lastD = db;
     }
   } else if (db !== null) {
     dEl.className = 'val accent';
-    dEl.textContent = db.toFixed(2) + ' mm';
+    dEl.textContent = fmtNum(db) + ' ' + unitLabel();
     dSub.textContent = t('results.fromWidth');
     lastD = db;
   } else if (dh !== null) {
     dEl.className = 'val accent';
-    dEl.textContent = dh.toFixed(2) + ' mm';
+    dEl.textContent = fmtNum(dh) + ' ' + unitLabel();
     dSub.textContent = t('results.fromHeight');
     lastD = dh;
   } else {
@@ -724,7 +795,12 @@ function exportFusionCsv() {
   if (/^\d/.test(name)) name = '_' + name;
   const day = new Date().toLocaleDateString('sv-SE'); // YYYY-MM-DD, lokale Zeit
   const field = s => /[",\r\n]/.test(s) ? '"' + s.replace(/"/g, '""') + '"' : s;
-  const row = (suffix, v) => `${name}_bl_${suffix},mm,${v} mm,${v.toFixed(2)},${field(t('csv.comment', {d: day}))},false`;
+  const U = UNITS[unit];
+  const row = (suffix, mm) => {
+    const v = mm / U.f;
+    const expr = unit === 'mm' ? v : +v.toFixed(U.dec);   // mm wie bisher; inch auf 4 Stellen
+    return `${name}_bl_${suffix},${U.csv},${expr} ${U.csv},${v.toFixed(U.dec)},${field(t('csv.comment', {d: day}))},false`;
+  };
   const csv = [t('csv.header'),
     row('h', lastMb), row('v', lastMh), row('dia', lastDAvg)].join('\r\n') + '\r\n';
   const a = document.createElement('a');
@@ -742,10 +818,8 @@ function saveMeasurement() {
     id: Date.now(),
     ts: Date.now(),
     title,
-    b_aussen: document.getElementById('b_aussen').value,
-    b_innen:  document.getElementById('b_innen').value,
-    h_aussen: document.getElementById('h_aussen').value,
-    h_innen:  document.getElementById('h_innen').value,
+    // Archiv bleibt in mm (Strings), unabhängig von der Anzeigeeinheit
+    ...Object.fromEntries(FIELD_ORDER.map(f => [f, store[f] == null ? '' : String(+store[f].toFixed(4))])),
     mb: lastMb, mh: lastMh, d: lastD
   };
 
@@ -776,7 +850,11 @@ function getDB() {
 function loadMeasurement(entry) {
   activeId = entry.id;
   document.getElementById('mess_title').value = entry.title;
-  FIELD_ORDER.forEach(f => { document.getElementById(f).value = entry[f] || ''; });
+  FIELD_ORDER.forEach(f => {
+    const v = parseFloat(entry[f]);
+    store[f] = isNaN(v) ? null : v;
+  });
+  refreshFields();
   calc();
   renderArchive();
 }
@@ -808,17 +886,19 @@ function renderArchive() {
 
   list.innerHTML = db.map(e => {
     const isActive = e.id === activeId;
-    const mbStr = e.mb ? e.mb.toFixed(2) : '—';
-    const mhStr = e.mh ? e.mh.toFixed(2) : '—';
-    const dStr  = e.d  ? t('archive.dia', {d: e.d.toFixed(2)}) : '';
+    const mbStr = e.mb ? fmtNum(e.mb) : '—';
+    const mhStr = e.mh ? fmtNum(e.mh) : '—';
+    const u = unitLabel();
+    const dStr  = e.d  ? t('archive.dia', {d: fmtNum(e.d), u}) : '';
     const dash = '—';
+    const val = x => { const v = parseFloat(x); return isNaN(v) ? dash : toDisplay(v); };
     return `<div class="archive-item${isActive?' active':''}" onclick='loadEntry(${e.id})'>
       <button class="del-btn" onclick="deleteMeasurement(${e.id},event)" title="${esc(t('btn.delete'))}">✕</button>
       <div class="a-title">${esc(e.title || t('project.default'))}</div>
       <div class="a-vals">
-        ${esc(t('archive.width', {a: e.b_aussen || dash, i: e.b_innen || dash}))}<br>
-        ${esc(t('archive.height', {a: e.h_aussen || dash, i: e.h_innen || dash}))}<br>
-        ${esc(t('archive.result', {mb: mbStr, mh: mhStr}))}${dStr ? ' · ' + esc(dStr) : ''}
+        ${esc(t('archive.width', {a: val(e.b_aussen), i: val(e.b_innen), u}))}<br>
+        ${esc(t('archive.height', {a: val(e.h_aussen), i: val(e.h_innen), u}))}<br>
+        ${esc(t('archive.result', {mb: mbStr, mh: mhStr, u}))}${dStr ? ' · ' + esc(dStr) : ''}
       </div>
       <div class="a-date">${formatStamp(e.ts || e.id)}</div>
     </div>`;
@@ -899,11 +979,11 @@ function drawDiagram(mb, mh, d) {
     out += `<line x1="${le}" y1="${cy4-r}" x2="${le}" y2="${cy4+r}" stroke="${colDiam}" stroke-width="1"/>`;
     out += `<line x1="${le-4}" y1="${cy4-r}" x2="${le+4}" y2="${cy4-r}" stroke="${colDiam}" stroke-width="1"/>`;
     out += `<line x1="${le-4}" y1="${cy4+r}" x2="${le+4}" y2="${cy4+r}" stroke="${colDiam}" stroke-width="1"/>`;
-    out += `<text x="${le+8}" y="${cy4+4}" font-size="11" fill="${colDiam}" font-family="${mono}">Ø ${d.toFixed(2)}</text>`;
+    out += `<text x="${le+8}" y="${cy4+4}" font-size="11" fill="${colDiam}" font-family="${mono}">Ø ${fmtNum(d)}</text>`;
   }
 
   // Horizontale Maßlinie (zwischen oben links und oben rechts)
-  const lblB = mb ? mb.toFixed(2)+' mm' : '?';
+  const lblB = mb ? fmtNum(mb)+' '+unitLabel() : '?';
   const yD = H - 10;
   out += `<line x1="${cx1}" y1="${yD}" x2="${cx2}" y2="${yD}" stroke="${colDim}" stroke-width="0.8"/>`;
   out += `<line x1="${cx1}" y1="${yD-4}" x2="${cx1}" y2="${yD+4}" stroke="${colDim}" stroke-width="0.8"/>`;
@@ -911,7 +991,7 @@ function drawDiagram(mb, mh, d) {
   out += `<text x="${(cx1+cx2)/2}" y="${H}" text-anchor="middle" font-size="11" fill="${colDim}" font-family="${mono}">${lblB}</text>`;
 
   // Vertikale Maßlinie (zwischen oben links und unten links)
-  const lblH = mh ? mh.toFixed(2)+' mm' : '?';
+  const lblH = mh ? fmtNum(mh)+' '+unitLabel() : '?';
   const xD = bx - 16;
   out += `<line x1="${xD}" y1="${cy1}" x2="${xD}" y2="${cy3}" stroke="${colDim}" stroke-width="0.8"/>`;
   out += `<line x1="${xD-4}" y1="${cy1}" x2="${xD+4}" y2="${cy1}" stroke="${colDim}" stroke-width="0.8"/>`;
@@ -929,7 +1009,9 @@ function drawDiagram(mb, mh, d) {
 
 /* ── Init ── */
 lang = initialLang();
+unit = initialUnit();
 applyI18n();
+applyUnitUi();
 loadState();
 renderArchive();
 document.getElementById('b_aussen').focus();

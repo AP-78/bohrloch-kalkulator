@@ -6,6 +6,7 @@ Enter the outer and inner edge distances (width and height) and get the **center
 
 - Single HTML page, no build step, no dependencies, no network requests
 - Measurements are kept in your browser (`localStorage`) only
+- Units: mm or inch (switch in the header); values are stored in mm internally, so switching converts without rounding drift
 - UI languages: English, Deutsch (picked from the browser language, switchable via the globe icon in the header)
 
 ## Usage
@@ -34,6 +35,7 @@ The **Fusion CSV** button writes `<project>_params_YYYY-MM-DD.csv` with three pa
 The file follows the layout of Fusion's own parameter export (`Name,Unit,Expression,Value,Comments,Favorite`);
 the column names follow the selected UI language.
 The German layout was verified against a Fusion 360 export; **the English column names are unverified**.
+In inch mode the file uses unit `in` with four decimals (e.g. `1.3756 in`); **this inch variant is unverified against Fusion 360**.
 Project names are sanitized to valid parameter names (umlauts transliterated, other special characters become `_`).
 
 ## Adding a language
